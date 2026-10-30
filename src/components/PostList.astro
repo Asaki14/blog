@@ -1,0 +1,13 @@
+---
+import { dateText, postUrl, type Post, type Locale } from '../lib/posts';
+interface Props { posts: Post[]; lang?: Locale }
+const { posts, lang = 'zh' } = Astro.props;
+const years = [...new Set(posts.map(p => p.data.date.getUTCFullYear()))];
+---
+{posts.length === 0 && <p class="empty">{lang === 'zh' ? '还没有文章。' : 'No posts yet.'}</p>}
+{years.map(year => <section aria-labelledby={`year-${year}`}>
+  <h2 class="year" id={`year-${year}`}>{year}</h2>
+  <ul class="post-list">{posts.filter(p => p.data.date.getUTCFullYear() === year).map(post => <li>
+    <a href={postUrl(post)}>{post.data.title}</a><time datetime={dateText(post.data.date)}>{dateText(post.data.date).slice(5)}</time>
+  </li>)}</ul>
+</section>)}

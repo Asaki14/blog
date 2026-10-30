@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import Post from '../components/Post.astro';
+import { allPosts, language, slug, postUrl } from '../lib/posts';
+import { postsFor, seriesUrl, type Locale } from '../lib/posts';
+export async function getStaticPaths() {
+  const entries = await allPosts();
+  const routes: any[] = entries.map(post => ({ params: { page: postUrl(post).slice(1, -1) }, props: { kind: 'post', post, alternate: entries.find(other => slug(other) === slug(post) && language(other) !== language(post)) } }));
+  for (const lang of ['zh', 'en'] as const) {
+    const prefix = lang === 'en' ? 'en/' : '';
+    routes.push({ params: { page: `${prefix}about` }, props: { lang, kind: 'about' } });
+    routes.push({ params: { page: `${prefix}series` }, props: { lang, kind: 'series' } });
+    const posts = await postsFor(lang);
+    for (const name of new Set(posts.map(p => p.data.series).filter(Boolean))) routes.push({ params: { page: `${prefix}series/${name}` }, props: { lang, kind: 'collection', name } });
+  }
+  return routes;
+}
+const { lang = 'zh', kind, name } = Astro.props as { lang: Locale; kind: string; name?: string };
+const posts = await postsFor(lang);
+const series = [...new Set(posts.map(p => p.data.series).filter((name): name is string => !!name))];
+const title = kind === 'about' ? (lang === 'zh' ? '关于' : 'About') : name ?? (lang === 'zh' ? '系列' : 'Series');
+const alternate = kind === 'about' ? (lang === 'zh' ? '/en/about/' : '/about/') : kind === 'series' ? (lang === 'zh' ? '/en/series/' : '/series/') : (await postsFor(lang === 'zh' ? 'en' : 'zh')).some(p => p.data.series === name) ? seriesUrl(name!, lang === 'zh' ? 'en' : 'zh') : undefined;
+---
+{kind === 'post' ? <Post post={Astro.props.post} alternate={Astro.props.alternate} /> : <Base title={title} lang={lang} alternate={alternate}><section class="sheet prose"><h1>{title}</h1>
+  {kind === 'about' ? <><p>Asaki</p><p><a href="https://github.com/Asaki14">GitHub</a></p></> : kind === 'series' ? (series.length ? <ul class="series-list">{series.map(name => <li><a href={seriesUrl(name, lang)}>{name}</a></li>)}</ul> : <p class="empty">{lang === 'zh' ? '还没有系列。' : 'No series yet.'}</p>) : <PostList posts={posts.filter(p => p.data.series === name)} lang={lang} />}
+</section></Base>}

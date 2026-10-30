@@ -1,0 +1,10 @@
+import { getCollection, type CollectionEntry } from 'astro:content';
+export type Locale = 'zh' | 'en';
+export type Post = CollectionEntry<'posts'>;
+export const language = (post: Post): Locale => post.id.endsWith('/en') ? 'en' : 'zh';
+export const slug = (post: Post) => post.id.replace(/\/(zh|en)$/, '');
+export const postUrl = (post: Post) => `${language(post) === 'en' ? '/en' : ''}/posts/${slug(post)}/`;
+export const seriesUrl = (name: string, lang: Locale = 'zh') => `${lang === 'en' ? '/en' : ''}/series/${encodeURIComponent(name)}/`;
+export const allPosts = async () => (await getCollection('posts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+export const postsFor = async (lang: Locale) => (await allPosts()).filter(p => language(p) === lang);
+export const dateText = (date: Date) => date.toISOString().slice(0, 10);

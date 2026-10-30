@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { postsFor, type Locale } from '../lib/posts';
+const { lang } = Astro.props as { lang: Locale };
+const posts = await postsFor(lang);
+---
+<Base lang={lang} alternate={lang === 'zh' ? '/en/' : '/'}>
+  <section class="sheet"><h1 class="archive-title">{lang === 'zh' ? '文章' : 'Writing'}</h1><PostList posts={posts} lang={lang} /></section>
+</Base>

@@ -1,0 +1,34 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { language, postUrl, seriesUrl, dateText } from '../lib/posts';
+const { post, alternate } = Astro.props;
+const lang = language(post);
+const { Content } = await render(post);
+---
+<Base title={post.data.title} description={post.data.description} lang={lang} alternate={alternate ? postUrl(alternate) : undefined} og={`/og/${post.id}.png`} article>
+  <article class="sheet prose">
+    <h1>{post.data.title}</h1>
+    <div class="meta"><time datetime={dateText(post.data.date)}>{dateText(post.data.date)}</time>{post.data.series && <a href={seriesUrl(post.data.series, lang)}>{post.data.series}</a>}</div>
+    {post.data.cover && <img class="cover" src={post.data.cover} alt="" />}
+    <Content />
+    {post.data.tags.length > 0 && <p class="tags">{post.data.tags.map(tag => `#${tag}`).join(' · ')}</p>}
+    <a class="back" href={lang === 'en' ? '/en/' : '/'}>{lang === 'zh' ? '← 所有文章' : '← All posts'}</a>
+  </article>
+  <dialog class="image-viewer" aria-label={lang === 'zh' ? '图片预览' : 'Image preview'}><button aria-label={lang === 'zh' ? '关闭' : 'Close'}>×</button><img alt="" /></dialog>
+</Base>
+<script>
+  const viewer = document.querySelector<HTMLDialogElement>('.image-viewer');
+  const preview = viewer?.querySelector('img');
+  document.querySelectorAll<HTMLImageElement>('.prose img').forEach(image => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'image-trigger';
+    button.style.cssText = 'display:block;border:0;background:none;padding:0;margin:24px auto;max-width:100%';
+    button.setAttribute('aria-label', document.documentElement.lang === 'en' ? `Enlarge image: ${image.alt}` : `放大图片：${image.alt}`);
+    image.replaceWith(button); button.append(image); image.style.margin = '0';
+    button.addEventListener('click', () => { if (viewer && preview) { preview.src = image.currentSrc; preview.alt = image.alt; viewer.showModal(); } });
+  });
+  viewer?.querySelector('button')?.addEventListener('click', () => viewer.close());
+  viewer?.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
+  document.querySelectorAll<HTMLVideoElement>('.prose video').forEach(video => { video.muted = true; if (matchMedia('(prefers-reduced-motion: reduce)').matches) { video.autoplay = false; video.pause(); } });
+</script>
