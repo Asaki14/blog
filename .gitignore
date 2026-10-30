@@ -6,3 +6,6 @@ dist/
 .env
 .env.*
 !.env.example
+dist-drafts/
+src/content/drafts/
+drafts-media/

@@ -2,7 +2,11 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const posts = defineCollection({
-  loader: glob({ pattern: '**/{zh,en}.md', base: './src/content/posts', generateId: ({ entry }) => entry.replace(/\.md$/, '') }),
+  loader: glob({
+    pattern: process.env.SHOW_DRAFTS === '1' ? '{posts,drafts}/**/{zh,en}.md' : 'posts/**/{zh,en}.md',
+    base: './src/content',
+    generateId: ({ entry }) => entry.replace(/^(posts|drafts)\//, '').replace(/\.md$/, ''),
+  }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),

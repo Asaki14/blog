@@ -7,6 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "build:drafts": "SHOW_DRAFTS=1 astro build",
+    "preview:drafts": "npm run build:drafts && SHOW_DRAFTS=1 astro preview",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {

@@ -13,18 +13,22 @@ npm run preview
 
 ## 写作
 
-每篇文章以独立目录保存：
+草稿正文与媒体保存在 gitignored 目录，未过 publish gate 不进入公开仓库：
 
 ```text
-src/content/posts/<slug>/zh.md
-src/content/posts/<slug>/en.md
-public/media/<slug>/
+src/content/drafts/<slug>/zh.md
+src/content/drafts/<slug>/en.md
+drafts-media/<slug>/
 ```
 
-1. 创建 `src/content/posts/<slug>/zh.md`，填写 frontmatter 与正文。
+1. 在相邻 studio 执行 `pipeline/new-post <slug> --track desktop --title '文章标题'`，填写草稿 frontmatter 与正文。
 2. 如有英文译文，在同一目录创建 `en.md`。两篇的 slug 相同；只有译文存在时显示语言切换。
-3. 图片、视频放在 `public/media/<slug>/`，正文以 `/media/<slug>/...` 引用。
-4. 运行 `npm run build`，然后 `npm run preview` 检查。
+3. 图片、视频放在 `drafts-media/<slug>/`，正文以 `/media/<slug>/...` 引用。
+4. 运行 `npm run preview:drafts` 本地构建并预览草稿；正文、媒体及 OG 的 URL 与发布后一致。仅构建可用 `npm run build:drafts`，产物在 `dist-drafts/`。
+5. 用户审核后，在 studio 执行 `pipeline/gate <slug> publish`（前两关须已通过），正文与媒体移至 `src/content/posts/<slug>/`、`public/media/<slug>/`。
+6. 执行 `npm run build && npx wrangler deploy`，再 commit、push。核验线上文章、OG 与媒体后才填平台稿。未过审的正文与媒体不得部署、提交或推送。
+
+普通 `npm run build` 只构建正式文章，产物在 `dist/`。`SHOW_DRAFTS=1` 可启用草稿构建，但不得用于部署。
 
 ```yaml
 ---
