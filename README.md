@@ -45,7 +45,7 @@ cover: /media/my-post/cover.webp
 - 图片：`![图片说明](/media/my-post/image.webp)`，点击或键盘激活可放大，Esc 关闭。
 - 视频：`![视频说明](/media/my-post/demo.mp4)`，也支持 webm，自动循环、静音、行内播放并保留控制器。系统减少动态效果时停止自动播放。
 - 提示块：使用 Markdown `> **提示**` 引用块。
-- OG：每篇构建为 `/og/<slug>/zh.png` 或 `/og/<slug>/en.png`，satori + resvg 离线生成；字体为本地 Noto Sans CJK SC，许可证见 `public/fonts/OFL.txt`。
+- OG：每篇构建为 `/og/<slug>/zh.png` 或 `/og/<slug>/en.png`，satori + resvg 离线生成；字体为本地 Noto Sans CJK SC（仅构建时使用，不随站点发布），许可证见 `assets/fonts/OFL.txt`。
 
 RSS：`/rss.xml`、`/en/rss.xml`。站点地图：`/sitemap-index.xml`。AI 索引：`/llms.txt`。
 

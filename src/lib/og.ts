@@ -6,8 +6,8 @@ import { Resvg } from '@resvg/resvg-js';
 // Unmodified Noto Sans CJK SC Regular, release Sans2.004 (SIL OFL 1.1).
 // Font: https://github.com/notofonts/noto-cjk/blob/Sans2.004/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf
 // License: https://github.com/notofonts/noto-cjk/blob/Sans2.004/LICENSE
-// Bundled license: public/fonts/OFL.txt. Build-time rendering uses no network.
-const font = readFile(resolve('public/fonts/NotoSansCJKsc-Regular.otf'));
+// Bundled license: assets/fonts/OFL.txt. Build-time only; not shipped to the site.
+const font = readFile(resolve('assets/fonts/NotoSansCJKsc-Regular.otf'));
 
 interface PostMetadata {
   title: string;
