@@ -43,7 +43,7 @@ cover: /media/my-post/cover.webp
 
 `title`、`date`、`description` 必填；`tags` 默认空数组，`series`、`cover` 可省略。日期使用 ISO 格式。
 
-中文路由 `/posts/<slug>/`，英文 `/en/posts/<slug>/`。系列根据 `series` 自动生成 `/series/<name>/` 与 `/en/series/<name>/`。首页按年份分组，空内容正常显示。
+中文路由 `/posts/<slug>/`，英文 `/en/posts/<slug>/`。`series` 只能是 `src/lib/series.ts` 中的 `Dotfiles` 或 `Agent`；顶栏直接链到 `/series/<name>/` 与 `/en/series/<name>/`，没有文章时显示空状态。首页按年份分组，空内容正常显示。
 
 - 代码块：使用带语言的 Markdown fenced code，构建时由 Shiki 高亮。
 - 图片：`![图片说明](/media/my-post/image.webp)`，点击或键盘激活可放大，Esc 关闭。

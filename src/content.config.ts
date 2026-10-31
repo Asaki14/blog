@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { SERIES } from './lib/series';
 
 const posts = defineCollection({
   loader: glob({
@@ -12,7 +13,7 @@ const posts = defineCollection({
     date: z.coerce.date(),
     description: z.string(),
     tags: z.array(z.string()).default([]),
-    series: z.string().optional(),
+    series: z.enum(SERIES).optional(),
     cover: z.string().optional(),
   }),
 });

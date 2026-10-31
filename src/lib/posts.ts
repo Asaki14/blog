@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+export { SERIES } from './series';
 export type Locale = 'zh' | 'en';
 export type Post = CollectionEntry<'posts'>;
 export const language = (post: Post): Locale => post.id.endsWith('/en') ? 'en' : 'zh';
