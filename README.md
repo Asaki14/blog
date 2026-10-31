@@ -24,7 +24,7 @@ drafts-media/<slug>/
 1. 在相邻 studio 执行 `pipeline/new-post <slug> --track desktop --title '文章标题'`，填写草稿 frontmatter 与正文。
 2. 如有英文译文，在同一目录创建 `en.md`。两篇的 slug 相同；只有译文存在时显示语言切换。
 3. 图片、视频放在 `drafts-media/<slug>/`，正文以 `/media/<slug>/...` 引用。
-4. 运行 `npm run preview:drafts` 本地构建并预览草稿；正文、媒体及 OG 的 URL 与发布后一致。仅构建可用 `npm run build:drafts`，产物在 `dist-drafts/`。
+4. 在相邻 studio 执行 `pipeline/edit <slug> [zh|en]`，浏览器直接编辑 Markdown，⌘S 保存并刷新右侧预览；双击预览段落定位源码。未保存时离开会提示，外部修改后拒绝覆盖；先复制修改，再重新加载。`--nvim` 保留终端编辑。也可运行 `npm run dev:drafts` 后访问 `http://localhost:4330/__edit/<slug>/`（英文加 `en/`）。编辑器只在草稿开发服务中提供，只监听本机；普通开发与生产构建不含编辑端点。`npm run preview:drafts` 仅构建预览，`npm run build:drafts` 产物在 `dist-drafts/`。
 5. 用户审核后，在 studio 执行 `pipeline/gate <slug> publish`（前两关须已通过），正文与媒体移至 `src/content/posts/<slug>/`、`public/media/<slug>/`。
 6. 执行 `npm run build && npx wrangler deploy`，再 commit、push。核验线上文章、OG 与媒体后才填平台稿。未过审的正文与媒体不得部署、提交或推送。
 

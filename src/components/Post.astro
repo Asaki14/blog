@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { language, postUrl, seriesUrl, dateText } from '../lib/posts';
+import { language, slug, postUrl, seriesUrl, dateText } from '../lib/posts';
 const { post, alternate } = Astro.props;
 const lang = language(post);
 const { Content } = await render(post);
@@ -10,6 +10,7 @@ const { Content } = await render(post);
   <article class="sheet prose">
     <h1>{post.data.title}</h1>
     <div class="meta"><time datetime={dateText(post.data.date)}>{dateText(post.data.date)}</time>{post.data.series && <a href={seriesUrl(post.data.series, lang)}>{post.data.series}</a>}</div>
+    {import.meta.env.DEV && import.meta.env.SHOW_DRAFTS === '1' && <a href={`/__edit/${slug(post)}/${lang === 'en' ? 'en/' : ''}`}>编辑</a>}
     {post.data.cover && <img class="cover" src={post.data.cover} alt="" />}
     <Content />
     {post.data.tags.length > 0 && <p class="tags">{post.data.tags.map(tag => `#${tag}`).join(' · ')}</p>}
