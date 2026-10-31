@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "build:drafts": "SHOW_DRAFTS=1 astro build",
     "preview:drafts": "npm run build:drafts && SHOW_DRAFTS=1 astro preview",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "dev:drafts": "SHOW_DRAFTS=1 astro dev --port 4330"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.5",
