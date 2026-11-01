@@ -31,5 +31,5 @@ const { Content } = await render(post);
   });
   viewer?.querySelector('button')?.addEventListener('click', () => viewer.close());
   viewer?.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
-  document.querySelectorAll<HTMLVideoElement>('.prose video').forEach(video => { video.muted = true; if (matchMedia('(prefers-reduced-motion: reduce)').matches) { video.autoplay = false; video.pause(); } });
+  document.querySelectorAll<HTMLVideoElement>('.prose video[autoplay]').forEach(video => { video.muted = true; if (matchMedia('(prefers-reduced-motion: reduce)').matches) { video.autoplay = false; video.pause(); } });
 </script>
