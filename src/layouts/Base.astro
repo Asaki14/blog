@@ -27,6 +27,31 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:type" content={article ? 'article' : 'website'} />
     {og && <meta property="og:image" content={new URL(og, Astro.site)} />}
     <meta name="twitter:card" content={og ? 'summary_large_image' : 'summary'} />
+    <script is:inline>
+      (() => {
+        const dark = matchMedia('(prefers-color-scheme: dark)');
+        const apply = () => {
+          let saved = null;
+          try { saved = localStorage.getItem('theme'); } catch {}
+          const theme = saved === 'light' || saved === 'dark' ? saved : dark.matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = theme;
+          document.querySelectorAll('.theme-toggle').forEach(button => button.setAttribute('aria-pressed', String(theme === 'dark')));
+        };
+        apply();
+        // The client router replaces <html> attributes on navigation, and this script only registers once.
+        if (window.__applyTheme) return;
+        window.__applyTheme = apply;
+        dark.addEventListener('change', apply);
+        document.addEventListener('astro:after-swap', apply);
+        document.addEventListener('DOMContentLoaded', apply);
+        document.addEventListener('click', event => {
+          if (!(event.target instanceof Element) || !event.target.closest('.theme-toggle')) return;
+          const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+          try { localStorage.setItem('theme', next); } catch {}
+          apply();
+        });
+      })();
+    </script>
     <ClientRouter fallback="none" />
   </head>
   <body>
@@ -37,6 +62,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <span class="nav-space"></span>
       <SocialLinks lang={lang} />
       {alternate && <a class="language" href={alternate} lang={lang === 'zh' ? 'en' : 'zh-CN'} aria-label={lang === 'zh' ? 'Read in English' : '阅读中文'}>{lang === 'zh' ? 'EN' : '中'}</a>}
+      <button class="theme-toggle" type="button" aria-label={lang === 'zh' ? '深色模式' : 'Dark mode'} aria-pressed="false">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></svg>
+      </button>
     </nav></header>
     <main id="main"><slot /></main>
     <footer><a href={`${prefix}/rss.xml`}>RSS</a><span>© {new Date().getFullYear()} Asaki</span></footer>

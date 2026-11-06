@@ -41,7 +41,7 @@ const { Content } = await render(post);
     const diagrams = document.querySelectorAll<HTMLPreElement>('pre[data-language="mermaid"]');
     if (diagrams.length) {
       const { default: mermaid } = await import('mermaid');
-      mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+      mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default' });
       const nodes = Array.from(diagrams, pre => {
         const diagram = document.createElement('div');
         diagram.className = 'mermaid';
