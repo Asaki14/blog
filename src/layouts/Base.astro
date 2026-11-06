@@ -73,14 +73,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       {SERIES.map(name => <a href={seriesUrl(name, lang)}>{seriesTitle(name, lang)}</a>)}
       <span class="nav-space"></span>
       <div class="nav-tools">
+        <button class="nav-more" type="button" aria-label={lang === 'zh' ? '更多' : 'More'} aria-expanded="false" aria-controls="nav-extra">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg>
+        </button>
         <div class="nav-extra" id="nav-extra">
           {lang === 'en' && <div class="nav-series">{SERIES.map(name => <a href={seriesUrl(name, lang)}>{seriesTitle(name, lang)}</a>)}</div>}
           {alternate && <a class="language" href={alternate} lang={lang === 'zh' ? 'en' : 'zh-CN'} aria-label={lang === 'zh' ? 'Read in English' : '阅读中文'}><span class="language-short">{lang === 'zh' ? 'EN' : '中'}</span><span class="language-long">{lang === 'zh' ? 'Read in English' : '阅读中文'}</span></a>}
           <SocialLinks lang={lang} />
         </div>
-        <button class="nav-more" type="button" aria-label={lang === 'zh' ? '更多' : 'More'} aria-expanded="false" aria-controls="nav-extra">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg>
-        </button>
         <button class="theme-toggle" type="button" aria-label={lang === 'zh' ? '深色模式' : 'Dark mode'} aria-pressed="false">
           <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
           <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></svg>
