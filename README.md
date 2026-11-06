@@ -82,7 +82,7 @@ npm run deploy
 | 限流 | Twikoo 单 IP 阈值 5、全站阈值 30，窗口 10 分钟 |
 | 管理密码 | macOS 钥匙串，服务名 `asaki-blog-twikoo`，账号 `Asaki14` |
 
-在评论区点击齿轮进入管理面板，审核、回复和修改配置。读取本机管理密码：`security find-generic-password -s asaki-blog-twikoo -a Asaki14 -w`。密码不得写入仓库；后端在首次公开前已设置管理密码。
+评论区隐藏了评论数、排序、搜索、刷新和管理齿轮所在的标题行。需要管理时，在浏览器开发者工具执行 `document.querySelector('.tk-comments-title').style.display='flex'` 显出齿轮，进入管理面板审核、回复和修改配置；也可用 `npx wrangler d1 execute asaki-blog-comments --remote --config comments/wrangler.jsonc` 直接改 D1 的 `comment`、`config` 表。读取本机管理密码：`security find-generic-password -s asaki-blog-twikoo -a Asaki14 -w`。密码不得写入仓库；后端在首次公开前已设置管理密码。
 
 客户端和后端由 `comments/build.mjs` 从固定提交 `da949ad0952cf5d2b05e2777803aae3aa615ffbb` 构建，使用上游锁文件。需要 Node.js 26、pnpm、Git 和 curl；已使用 pnpm `10.33.0` 构建。客户端应用 `comments/client.patch`，实现单行起始的输入框和发送时原位填写身份；公开与草稿的开发、构建命令自动生成客户端，补丁和构建脚本未变化时复用本地产物。客户端产物在忽略的 `comments/client/dist/`，后端产物在 `comments/dist/`。升级时更新构建脚本中的版本与源码提交，重新核对补丁，再执行：
 

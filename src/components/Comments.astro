@@ -55,7 +55,6 @@ const enabled = import.meta.env.SHOW_DRAFTS !== '1' && envId;
   .comments { padding-top: 28px; padding-bottom: 32px; }
   .comments h2 { margin: 0 0 22px; font-size: 22px; }
   .comments :global(.twikoo) { color: var(--ink); font: inherit; }
-  .comments :global(.twikoo .tk-comments-title) { flex-wrap: wrap; gap: 12px; color: var(--muted); font-size: 14px; }
   .comments :global(.twikoo .tk-submit > .tk-row > .tk-avatar),
   .comments :global(.twikoo .tk-footer),
   .comments :global(.twikoo .tk-extras),
@@ -63,7 +62,9 @@ const enabled = import.meta.env.SHOW_DRAFTS !== '1' && envId;
   .comments :global(.twikoo .tk-row-actions-start),
   .comments :global(.twikoo .tk-preview),
   .comments :global(.twikoo .tk-preview-container),
-  .comments :global(.twikoo .tk-input__count) { display: none; }
+  .comments :global(.twikoo .tk-input__count),
+  .comments :global(.twikoo .tk-comments-title),
+  .comments :global(.twikoo .tk-comments-search) { display: none; }
   .comments :global(.twikoo .tk-submit) { flex-direction: row; align-items: flex-end; gap: 4px; margin: 0; padding: 0 4px 0 14px; background: var(--canvas); border: 1px solid color-mix(in srgb, var(--muted) 30%, var(--line)); border-radius: var(--radius); cursor: text; transition: border-color .15s ease, background-color .15s ease; }
   .comments :global(.twikoo .tk-submit:hover) { border-color: color-mix(in srgb, var(--muted) 60%, var(--line)); }
   .comments :global(.twikoo .tk-submit:focus-within) { background: var(--paper); border-color: var(--link); }
