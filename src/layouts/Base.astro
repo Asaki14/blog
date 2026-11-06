@@ -44,11 +44,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         dark.addEventListener('change', apply);
         document.addEventListener('astro:after-swap', apply);
         document.addEventListener('DOMContentLoaded', apply);
+        const setMenu = open => {
+          document.querySelector('.nav-more')?.setAttribute('aria-expanded', String(open));
+          document.getElementById('nav-extra')?.toggleAttribute('data-open', open);
+        };
         document.addEventListener('click', event => {
-          if (!(event.target instanceof Element) || !event.target.closest('.theme-toggle')) return;
+          if (!(event.target instanceof Element)) return;
+          if (event.target.closest('.nav-more')) return setMenu(!document.getElementById('nav-extra')?.hasAttribute('data-open'));
+          if (!event.target.closest('#nav-extra')) setMenu(false);
+          if (!event.target.closest('.theme-toggle')) return;
           const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
           try { localStorage.setItem('theme', next); } catch {}
           apply();
+        });
+        document.addEventListener('keydown', event => {
+          if (event.key !== 'Escape' || !document.getElementById('nav-extra')?.hasAttribute('data-open')) return;
+          setMenu(false);
+          document.querySelector('.nav-more')?.focus();
         });
       })();
     </script>
@@ -60,12 +72,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <a class="brand" href={`${prefix}/`}>Asaki</a>
       {SERIES.map(name => <a href={seriesUrl(name, lang)}>{seriesTitle(name, lang)}</a>)}
       <span class="nav-space"></span>
-      <SocialLinks lang={lang} />
-      {alternate && <a class="language" href={alternate} lang={lang === 'zh' ? 'en' : 'zh-CN'} aria-label={lang === 'zh' ? 'Read in English' : '阅读中文'}>{lang === 'zh' ? 'EN' : '中'}</a>}
-      <button class="theme-toggle" type="button" aria-label={lang === 'zh' ? '深色模式' : 'Dark mode'} aria-pressed="false">
-        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
-        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></svg>
-      </button>
+      <div class="nav-tools">
+        <div class="nav-extra" id="nav-extra">
+          {lang === 'en' && <div class="nav-series">{SERIES.map(name => <a href={seriesUrl(name, lang)}>{seriesTitle(name, lang)}</a>)}</div>}
+          {alternate && <a class="language" href={alternate} lang={lang === 'zh' ? 'en' : 'zh-CN'} aria-label={lang === 'zh' ? 'Read in English' : '阅读中文'}><span class="language-short">{lang === 'zh' ? 'EN' : '中'}</span><span class="language-long">{lang === 'zh' ? 'Read in English' : '阅读中文'}</span></a>}
+          <SocialLinks lang={lang} />
+        </div>
+        <button class="nav-more" type="button" aria-label={lang === 'zh' ? '更多' : 'More'} aria-expanded="false" aria-controls="nav-extra">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg>
+        </button>
+        <button class="theme-toggle" type="button" aria-label={lang === 'zh' ? '深色模式' : 'Dark mode'} aria-pressed="false">
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></svg>
+        </button>
+      </div>
     </nav></header>
     <main id="main"><slot /></main>
     <footer><a href={`${prefix}/rss.xml`}>RSS</a><span>© {new Date().getFullYear()} Asaki</span></footer>
