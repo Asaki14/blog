@@ -43,9 +43,12 @@ cover: /media/my-post/cover.webp
 
 `title`、`date`、`description` 必填；`tags` 默认空数组，`series`、`cover` 可省略。日期使用 ISO 格式。
 
-中文路由 `/posts/<slug>/`，英文 `/en/posts/<slug>/`。`series` 只能是 `src/lib/series.ts` 中的 `Dotfiles` 或 `Agent`；顶栏直接链到 `/series/<name>/` 与 `/en/series/<name>/`，没有文章时显示空状态。首页按年份分组，空内容正常显示。
+中文路由 `/posts/<slug>/`，英文 `/en/posts/<slug>/`。`series` 由 `src/lib/series.ts` 定义，目前为 `Dotfiles`、`Agent`、`观后`；顶栏直接链到 `/series/<name>/` 与 `/en/series/<name>/`，没有文章时显示空状态。首页按年份分组，空内容正常显示。
+系列的中英文显示名由同文件的 `seriesTitle` 提供；导航、系列页标题和文章元信息随页面语言切换。观后系列文章的 `title` 只写 `《作品名字》`，正文保留作者成品排版。
 
 - 代码块：使用带语言的 Markdown fenced code，构建时由 Shiki 高亮。
+- 公式：支持 `$...$` 与 `$$...$$`，使用 KaTeX 渲染；独占一行的 `$$...$$` 保持居中显示，即使前后没有空行。
+- 流程图：`mermaid` 围栏代码在文章页渲染为图；只有页面含图时才加载 Mermaid。
 - 图片：`![图片说明](/media/my-post/image.webp)`，点击或键盘激活可放大，Esc 关闭。
 - 视频：`![视频说明](/media/my-post/demo.mp4)`，也支持 webm，行内播放并保留控制器。无音轨的视频自动循环、静音播放，系统减少动态效果时停止自动播放；有音轨的视频等读者点击播放。
 - 提示块：使用 Markdown `> **提示**` 引用块。

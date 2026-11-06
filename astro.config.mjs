@@ -6,6 +6,9 @@ import { cp, mkdir, readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { draftEditor } from './src/lib/draft-editor.mjs';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import { articleMath } from './src/lib/article-math.mjs';
 
 const showDrafts = process.env.SHOW_DRAFTS === '1';
 
@@ -46,6 +49,6 @@ export default defineConfig({
   ],
   markdown: {
     shikiConfig: { themes: { light: 'github-dark', dark: 'github-dark' } },
-    processor: unified({ rehypePlugins: [articleMedia] }),
+    processor: unified({ remarkPlugins: [remarkMath, articleMath], rehypePlugins: [rehypeKatex, articleMedia] }),
   },
 });

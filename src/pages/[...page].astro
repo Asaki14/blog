@@ -3,17 +3,18 @@ import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
 import Post from '../components/Post.astro';
 import { allPosts, language, slug, postUrl, postsFor, SERIES, seriesUrl, type Locale } from '../lib/posts';
+import { seriesTitle } from '../lib/series';
 export async function getStaticPaths() {
   const entries = await allPosts();
   const routes: any[] = entries.map(post => ({ params: { page: postUrl(post).slice(1, -1) }, props: { kind: 'post', post, alternate: entries.find(other => slug(other) === slug(post) && language(other) !== language(post)) } }));
   for (const lang of ['zh', 'en'] as const) {
-    for (const name of SERIES) routes.push({ params: { page: seriesUrl(name, lang).slice(1, -1) }, props: { lang, kind: 'collection', name } });
+    for (const name of SERIES) routes.push({ params: { page: decodeURIComponent(seriesUrl(name, lang).slice(1, -1)) }, props: { lang, kind: 'collection', name } });
   }
   return routes;
 }
 const { lang = 'zh', kind, name } = Astro.props as { lang: Locale; kind: string; name: string };
 const posts = kind === 'post' ? [] : (await postsFor(lang)).filter(p => p.data.series === name);
 ---
-{kind === 'post' ? <Post post={Astro.props.post} alternate={Astro.props.alternate} /> : <Base title={name} lang={lang} alternate={seriesUrl(name, lang === 'zh' ? 'en' : 'zh')}><section class="sheet prose"><h1>{name}</h1>
+{kind === 'post' ? <Post post={Astro.props.post} alternate={Astro.props.alternate} /> : <Base title={seriesTitle(name, lang)} lang={lang} alternate={seriesUrl(name, lang === 'zh' ? 'en' : 'zh')}><section class="sheet prose"><h1>{seriesTitle(name, lang)}</h1>
   {posts.length ? <PostList posts={posts} lang={lang} /> : <p class="empty">{lang === 'zh' ? '还没有文章。' : 'No posts yet.'}</p>}
 </section></Base>}
