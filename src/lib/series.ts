@@ -1,8 +1,8 @@
 export const SERIES = ['Dotfiles', 'Agent', '观后'] as const;
 
 const titles: Record<string, { zh: string; en: string }> = {
-  Dotfiles: { zh: 'Dotfiles', en: 'Dotfiles' },
-  Agent: { zh: 'Agent', en: 'Agent' },
+  Dotfiles: { zh: '配置', en: 'Dotfiles' },
+  Agent: { zh: 'AI', en: 'Agent' },
   观后: { zh: '观后', en: 'Reviews' },
 };
 

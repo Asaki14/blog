@@ -44,7 +44,7 @@ cover: /media/my-post/cover.webp
 `title`、`date`、`description` 必填；`tags` 默认空数组，`series`、`cover` 可省略。日期使用 ISO 格式。
 
 中文路由 `/posts/<slug>/`，英文 `/en/posts/<slug>/`。`series` 由 `src/lib/series.ts` 定义，目前为 `Dotfiles`、`Agent`、`观后`；顶栏直接链到 `/series/<name>/` 与 `/en/series/<name>/`，没有文章时显示空状态。首页按年份分组，空内容正常显示。
-系列的中英文显示名由同文件的 `seriesTitle` 提供；导航、系列页标题和文章元信息随页面语言切换。观后系列文章的 `title` 只写 `《作品名字》`，正文保留作者成品排版。
+系列的中英文显示名由同文件的 `seriesTitle` 提供；中文依次为「配置」「AI」「观后」，英文依次为 `Dotfiles`、`Agent`、`Reviews`。导航、系列页标题和文章元信息随页面语言切换，系列标识及 URL 不随显示名变化。观后系列文章的 `title` 只写 `《作品名字》`，正文保留作者成品排版。
 
 - 代码块：使用带语言的 Markdown fenced code，构建时由 Shiki 高亮。
 - 公式：支持 `$...$` 与 `$$...$$`，使用 KaTeX 渲染；独占一行的 `$$...$$` 保持居中显示，即使前后没有空行。
