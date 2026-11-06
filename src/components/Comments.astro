@@ -1,0 +1,105 @@
+---
+import clientScript from '../../comments/client/dist/twikoo.min.js?url';
+import type { Locale } from '../lib/posts';
+interface Props { path: string; lang: Locale; }
+const { path, lang } = Astro.props;
+const envId = import.meta.env.PUBLIC_TWIKOO_ENV_ID || (!import.meta.env.DEV ? 'https://comments.asaki.qzz.io' : '');
+const enabled = import.meta.env.SHOW_DRAFTS !== '1' && envId;
+---
+{enabled && <section class="sheet comments" aria-labelledby="comments-title" data-env-id={envId} data-path={path} data-lang={lang} data-client-script={clientScript}>
+  <h2 id="comments-title">{lang === 'zh' ? '评论' : 'Comments'}</h2>
+  <div id="comments"><p role="status">{lang === 'zh' ? '评论加载中…' : 'Loading comments…'}</p></div>
+  <noscript>{lang === 'zh' ? '启用 JavaScript 后可查看和发表评论。' : 'Enable JavaScript to read and post comments.'}</noscript>
+</section>}
+<script>
+  type Twikoo = { init: (options: Record<string, unknown>) => Promise<void> };
+  let client: Promise<Twikoo> | undefined;
+  let style: HTMLStyleElement | null = null;
+  let mounts = 0;
+  let queue = Promise.resolve();
+  // The client router replaces <head>, which would drop the style Twikoo injects on first load.
+  const loadClient = (src: string) => client ??= new Promise<Twikoo>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => {
+      style = document.querySelector('style[data-twikoo]');
+      resolve((window as typeof window & { twikoo: Twikoo }).twikoo);
+    };
+    script.onerror = () => { client = undefined; reject(new Error(`Failed to load ${src}`)); };
+    document.head.append(script);
+  });
+  // Twikoo mounts by selector after its own awaits, so each navigation gets a unique target
+  // and inits run one at a time; a stale init can only reach its own, already detached container.
+  document.addEventListener('astro:page-load', () => {
+    const section = document.querySelector<HTMLElement>('.comments');
+    const container = section?.querySelector<HTMLElement>('#comments');
+    if (!section || !container) return;
+    const target = String(++mounts);
+    container.dataset.twikooMount = target;
+    const { envId, path, lang, clientScript } = section.dataset;
+    queue = queue.then(async () => {
+      if (!container.isConnected) return;
+      try {
+        const twikoo = await loadClient(clientScript!);
+        if (!container.isConnected) return;
+        if (style && !style.isConnected) document.head.append(style);
+        await twikoo.init({ envId, el: `[data-twikoo-mount="${target}"]`, path, lang: lang === 'zh' ? 'zh-CN' : 'en', placeholder: lang === 'zh' ? '写下你的想法…' : 'Leave a comment…' });
+      } catch (error) {
+        if (container.isConnected) container.textContent = lang === 'zh' ? '评论暂时无法加载，请稍后刷新。' : 'Comments could not be loaded. Please refresh later.';
+        console.error('Twikoo initialization failed:', error);
+      }
+    });
+  });
+</script>
+<style>
+  .comments { padding-top: 28px; padding-bottom: 32px; }
+  .comments h2 { margin: 0 0 22px; font-size: 22px; }
+  .comments :global(.twikoo) { color: var(--ink); font: inherit; }
+  .comments :global(.twikoo .tk-comments-title) { flex-wrap: wrap; gap: 12px; color: var(--muted); font-size: 14px; }
+  .comments :global(.twikoo .tk-submit > .tk-row > .tk-avatar),
+  .comments :global(.twikoo .tk-footer),
+  .comments :global(.twikoo .tk-extras),
+  .comments :global(.twikoo .__markdown),
+  .comments :global(.twikoo .tk-row-actions-start),
+  .comments :global(.twikoo .tk-preview),
+  .comments :global(.twikoo .tk-preview-container),
+  .comments :global(.twikoo .tk-input__count) { display: none; }
+  .comments :global(.twikoo .tk-submit) { flex-direction: row; align-items: flex-end; gap: 4px; margin: 0; padding: 0 4px 0 14px; background: var(--canvas); border: 1px solid color-mix(in srgb, var(--muted) 30%, var(--line)); border-radius: var(--radius); cursor: text; transition: border-color .15s ease, background-color .15s ease; }
+  .comments :global(.twikoo .tk-submit:hover) { border-color: color-mix(in srgb, var(--muted) 60%, var(--line)); }
+  .comments :global(.twikoo .tk-submit:focus-within) { background: var(--paper); border-color: var(--link); }
+  .comments :global(.twikoo .tk-submit > .tk-row:first-child) { flex: 1; min-width: 0; margin: 0; }
+  .comments :global(.twikoo .tk-submit .tk-col) { min-width: 0; }
+  .comments :global(.twikoo .tk-input__inner) { color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 4px; font: inherit; font-size: 16px; box-shadow: none; }
+  .comments :global(.twikoo .tk-submit .tk-textarea__inner) { display: block; min-height: 44px; padding: 10px 0; background: transparent; border: 0; line-height: 1.6; resize: none; }
+  .comments :global(.twikoo .tk-input__inner::placeholder) { color: var(--muted); opacity: 1; }
+  .comments :global(.twikoo .tk-input__inner:focus) { border-color: var(--link); }
+  .comments :global(.twikoo .tk-input-group__prepend) { color: var(--muted); background: transparent; border-color: var(--line); border-radius: 4px 0 0 4px; font: inherit; }
+  .comments :global(.twikoo .tk-submit .actions) { flex: none; margin: 0; gap: 0; }
+  .comments :global(.twikoo .tk-submit .tk-button) { height: 44px; padding: 0 10px; margin: 0; background: transparent; border: 0; border-radius: 0; color: var(--muted); font: inherit; font-size: 15px; box-shadow: none; }
+  .comments :global(.twikoo .tk-submit .tk-send:not(:disabled)) { color: var(--link); }
+  .comments :global(.twikoo .tk-submit .tk-button:hover:not(:disabled)) { color: var(--link); background: transparent; }
+  .comments :global(.twikoo .tk-submit .tk-button:disabled) { color: var(--muted); opacity: .5; background: transparent; cursor: text; }
+  .comments :global(.twikoo .tk-identity) { margin: 2px 0 12px; }
+  .comments :global(.twikoo .tk-meta-input) { gap: 8px; margin-bottom: 0; }
+  .comments :global(.twikoo .tk-meta-input__item) { margin: 0; min-width: 0; }
+  .comments :global(.twikoo .tk-admin-close) { color: var(--muted); }
+  .comments :global(.twikoo .tk-comments-container) { margin-top: 24px; }
+  .comments :global(.twikoo .tk-comment) { padding-top: 22px; margin-top: 22px; border-top: 1px solid var(--line); }
+  .comments :global(.twikoo .tk-comment .tk-row) { flex-wrap: wrap; gap: 8px; }
+  .comments :global(.twikoo .tk-content) { color: var(--ink); font-size: 17px; line-height: 1.75; }
+  .comments :global(.twikoo .tk-content p) { margin: 10px 0; }
+  .comments :global(.twikoo .tk-time), .comments :global(.twikoo .tk-comments-no) { color: var(--muted); }
+  .comments :global(.twikoo .tk-comment .tk-avatar) { border-radius: 50%; }
+  .comments :global(.twikoo .tk-replies) { border-left: 1px solid var(--line); padding-left: 18px; }
+  .comments :global(.twikoo .tk-action-link) { color: var(--muted); }
+  .comments :global(.twikoo .tk-action-link:hover),
+  .comments :global(.twikoo .tk-action-link.tk-liked),
+  .comments :global(.twikoo .tk-action-link.tk-disliked) { color: var(--link); }
+  @media (max-width: 480px) {
+    .comments :global(.twikoo .tk-meta-input) { flex-direction: column; }
+    .comments :global(.twikoo .tk-meta-input__item) { width: 100%; }
+    .comments :global(.twikoo .tk-replies) { padding-left: 12px; }
+  }
+  .comments :global(a:focus-visible), .comments :global(button:focus-visible), .comments :global(input:focus-visible), .comments :global(textarea:focus-visible) { outline: 2px solid var(--link); outline-offset: 3px; }
+  .comments :global(.twikoo .tk-input__inner:focus-visible) { outline: none; }
+</style>

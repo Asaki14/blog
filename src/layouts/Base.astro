@@ -1,14 +1,16 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import { seriesUrl, type Locale } from '../lib/posts';
 import { SERIES, seriesTitle } from '../lib/series';
+import SocialLinks from '../components/SocialLinks.astro';
 interface Props { title?: string; description?: string; lang?: Locale; alternate?: string; og?: string; article?: boolean; }
 const { title = 'Asaki', description = 'Asaki 的博客', lang = 'zh', alternate, og, article = false } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
-<html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'} transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,6 +27,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:type" content={article ? 'article' : 'website'} />
     {og && <meta property="og:image" content={new URL(og, Astro.site)} />}
     <meta name="twitter:card" content={og ? 'summary_large_image' : 'summary'} />
+    <ClientRouter fallback="none" />
   </head>
   <body>
     <a class="skip" href="#main">{lang === 'zh' ? '跳到正文' : 'Skip to content'}</a>
@@ -32,9 +35,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <a class="brand" href={`${prefix}/`}>Asaki</a>
       {SERIES.map(name => <a href={seriesUrl(name, lang)}>{seriesTitle(name, lang)}</a>)}
       <span class="nav-space"></span>
+      <SocialLinks lang={lang} />
       {alternate && <a class="language" href={alternate} lang={lang === 'zh' ? 'en' : 'zh-CN'} aria-label={lang === 'zh' ? 'Read in English' : '阅读中文'}>{lang === 'zh' ? 'EN' : '中'}</a>}
     </nav></header>
     <main id="main"><slot /></main>
-    <footer><a href="https://github.com/Asaki14">GitHub</a><a href={`${prefix}/rss.xml`}>RSS</a><span>© {new Date().getFullYear()} Asaki</span></footer>
+    <footer><a href={`${prefix}/rss.xml`}>RSS</a><span>© {new Date().getFullYear()} Asaki</span></footer>
   </body>
 </html>

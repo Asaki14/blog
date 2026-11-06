@@ -5,12 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "predev": "node comments/build.mjs --client",
     "build": "astro build",
+    "prebuild": "node comments/build.mjs --client",
     "preview": "astro preview",
     "build:drafts": "SHOW_DRAFTS=1 astro build",
+    "prebuild:drafts": "node comments/build.mjs --client",
     "preview:drafts": "npm run build:drafts && SHOW_DRAFTS=1 astro preview",
     "deploy": "npm run build && wrangler deploy",
-    "dev:drafts": "SHOW_DRAFTS=1 astro dev --port 4330"
+    "dev:drafts": "SHOW_DRAFTS=1 astro dev --port 4330",
+    "predev:drafts": "node comments/build.mjs --client",
+    "build:comments": "node comments/build.mjs",
+    "deploy:comments": "npm run build:comments && node comments/deploy.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.5",

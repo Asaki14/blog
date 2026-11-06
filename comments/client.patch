@@ -1,0 +1,163 @@
+diff --git a/packages/client/src/components/TkInput.vue b/packages/client/src/components/TkInput.vue
+--- a/packages/client/src/components/TkInput.vue
++++ b/packages/client/src/components/TkInput.vue
+@@ -30,6 +30,7 @@
+       ref="inputRef"
+       class="tk-input__inner tk-textarea__inner"
+       :name="name"
++      :aria-label="ariaLabel"
+       :value="modelValue"
+       :placeholder="placeholder"
+       :rows="rows"
+@@ -47,6 +48,7 @@
+       class="tk-input__inner"
+       :type="type"
+       :name="name"
++      :aria-label="ariaLabel"
+       :value="modelValue"
+       :placeholder="placeholder"
+       :disabled="disabled"
+@@ -89,6 +91,7 @@ const props = withDefaults(
+     /** 输入形态（`textarea` 走多行） */
+     type?: string;
+     placeholder?: string;
++    ariaLabel?: string;
+     /** textarea 行数（autosize 时作为最小行数） */
+     rows?: number;
+     /** 自适应高度（true 或用 `{ minRows }` 指定最小行数） */
+diff --git a/packages/client/src/components/TkMetaInput.vue b/packages/client/src/components/TkMetaInput.vue
+--- a/packages/client/src/components/TkMetaInput.vue
++++ b/packages/client/src/components/TkMetaInput.vue
+@@ -13,6 +13,7 @@
+       class="tk-meta-input__item"
+       :name="metaInput.name"
+       :type="metaInput.type"
++      :aria-label="metaInput.locale"
+       :model-value="metaData[metaInput.key]"
+       :placeholder="
+         requiredFields[metaInput.key] ? t('META_INPUT_REQUIRED') : t('META_INPUT_NOT_REQUIRED')
+@@ -120,8 +121,8 @@ const requiredFields = computed(() => {
+ function checkValid(): boolean {
+   const isValidMail = mailRegExp.test(metaData.mail);
+   return (
+-    (!!metaData.nick || !requiredFields.value.nick) &&
+-    (isValidMail || !requiredFields.value.mail) &&
++    (!!metaData.nick.trim() || !requiredFields.value.nick) &&
++    (isValidMail || (!metaData.mail && !requiredFields.value.mail)) &&
+     (!!metaData.link || !requiredFields.value.link)
+   );
+ }
+@@ -143,6 +144,7 @@ function onMetaInput(value: string, evt: Event): void {
+   const key = (evt.target as HTMLInputElement).name as MetaKey;
+   if (!key) return;
+   metaData[key] = value;
++  emit("update", { meta: { ...metaData }, valid: checkValid() });
+   emit("validate", checkValid());
+ }
+ 
+diff --git a/packages/client/src/components/TkSubmit.vue b/packages/client/src/components/TkSubmit.vue
+--- a/packages/client/src/components/TkSubmit.vue
++++ b/packages/client/src/components/TkSubmit.vue
+@@ -15,26 +15,30 @@
+     <div class="tk-row">
+       <TkAvatar :config="config" :mail="mail" :nick="nick" />
+       <div class="tk-col">
+-        <TkMetaInput
+-          :nick="nick"
+-          :mail="mail"
+-          :link="link"
+-          :config="config"
+-          @update="onMetaUpdate"
+-          @validate="isMetaValid = $event"
+-        />
+         <TkInput
+           ref="textareaRef"
+           v-model="comment"
+           class="tk-input"
+           type="textarea"
+           :placeholder="commentPlaceholder"
++          :aria-label="commentPlaceholder"
+-          :autosize="{ minRows: 3 }"
++          :rows="1"
++          :autosize="{ minRows: 1 }"
+           :maxlength="maxLength"
+           show-word-limit
+           @input="onCommentInput"
+           @keyup="onKeyup"
+         />
++        <div v-show="identityVisible" ref="identityRef" class="tk-identity" @keyup.enter.stop="!$event.isComposing && send()">
++          <TkMetaInput
++            :nick="nick"
++            :mail="mail"
++            :link="link"
++            :config="config"
++            @update="onMetaUpdate"
++            @validate="isMetaValid = $event"
++          />
++        </div>
+       </div>
+     </div>
+     <div class="tk-row actions">
+@@ -71,7 +74,10 @@
+       >
+         <TkIcon name="markdown" />
+       </a>
+-      <TkButton v-if="!!replyId" class="tk-cancel" size="small" @click="cancel">
++      <TkButton v-if="identityVisible" class="tk-identity-cancel" size="small" :disabled="isSending" @click="identityVisible = false">
++        {{ t("SUBMIT_CANCEL") }}
++      </TkButton>
++      <TkButton v-if="!!replyId && !identityVisible" class="tk-cancel" size="small" @click="cancel">
+         {{ t("SUBMIT_CANCEL") }}
+       </TkButton>
+       <TkButton class="tk-preview" size="small" @click="preview">{{
+@@ -180,6 +186,8 @@ const isSending = ref(false);
+ const isPreviewing = ref(false);
+ /** meta 是否校验通过 */
+ const isMetaValid = ref(false);
++const identityVisible = ref(false);
++const identityRef = ref<HTMLElement>();
+ /** 提交错误（统一错误模型）*/
+ const error = ref<TwikooError>();
+ 
+@@ -244,7 +252,9 @@ const captchaProvider = computed(() => {
+ const showImage = computed(() => !!props.config.IMAGE_CDN);
+ 
+ /** 是否可发送 */
+-const canSend = computed(() => !isSending.value && isMetaValid.value && !!comment.value.trim());
++const canSend = computed(
++  () => !isSending.value && !!comment.value.trim() && (!identityVisible.value || isMetaValid.value),
++);
+ 
+ /** 评论框提示语（`<br>` 还原为换行；1.x commentPlaceholder 对齐） */
+ const commentPlaceholder = computed(() => {
+@@ -638,6 +648,13 @@ function updatePreview(): void {
+  * 发送评论（1.x send 对齐：校验 → 人机验证 → COMMENT_SUBMIT → 清草稿）。
+  */
+ async function send(): Promise<void> {
++  if (!canSend.value) return;
++  if (!identityVisible.value) {
++    identityVisible.value = true;
++    await nextTick();
++    identityRef.value?.querySelector<HTMLInputElement>("input")?.focus();
++    return;
++  }
+   isSending.value = true;
+   error.value = undefined;
+   try {
+@@ -678,6 +695,7 @@ async function send(): Promise<void> {
+     const result = (res.result ?? res) as { id?: string; code?: number; message?: string };
+     if (result.id) {
+       comment.value = "";
++      identityVisible.value = false;
+       isPreviewing.value = false;
+       commentHtml.value = "";
+       error.value = undefined;
+@@ -708,7 +726,7 @@ async function send(): Promise<void> {
+  * @param evt 键盘事件
+  */
+ function onKeyup(evt: KeyboardEvent): void {
+-  if ((evt.ctrlKey || evt.metaKey) && evt.key === "Enter") void send();
++  if (!evt.isComposing && (evt.ctrlKey || evt.metaKey) && evt.key === "Enter") void send();
+ }
+ 
+ /** 打开文件选择框（1.x openSelectImage 对齐） */

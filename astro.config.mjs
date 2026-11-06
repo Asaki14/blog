@@ -16,6 +16,7 @@ export default defineConfig({
   site: 'https://blog.asaki.qzz.io',
   trailingSlash: 'always',
   outDir: showDrafts ? './dist-drafts' : './dist',
+  prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   server: { host: '127.0.0.1' },
   integrations: [
     sitemap(),
