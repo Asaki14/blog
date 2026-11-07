@@ -95,6 +95,10 @@ npm run deploy
 
 邮件通知尚未配置；如需启用，在管理面板配置 Resend 等 HTTP 邮件通道。该 Workers 适配器不支持直连 SMTP、Akismet 或腾讯云内容审核。访客 IP 由后端记录。
 
+## 站点图标
+
+博客与个人网站共用墨色连续圆角底、米白衬线 A。`public/favicon.svg` 是矢量真源；`favicon.ico` 包含 16、32、48、64px，`apple-touch-icon.png` 为 180px。修改 SVG 后同步重新生成位图，并将三份资产复制到个人网站的 `public/`。两站图标链接带版本参数，替换时同步更新以刷新浏览器缓存。
+
 ## 致谢与许可
 
 视觉与部分样式依据 [Tw93 的 cosy-jekyll-theme](https://github.com/tw93/tw93.github.io)，保留其 MIT 许可及版权声明于 `LICENSE`。参考源码的 `_layouts`、`_sass` 和 `css/jinkai.css`。
