@@ -69,12 +69,12 @@ omacosy 则把换主题变成了联动：状态栏、壁纸、Ghostty 与边框�
 
 ## 配置已开源，可以只装一部分
 
-仓库在 [Asaki14/dotfiles](https://github.com/Asaki14/dotfiles)。这套 dotfiles，也就是保存各工具偏好的配置文件，按工具分模块，包含桌面主题、终端工具与 Agent 相关配置。
+仓库在 [Asaki14/dotfiles](https://github.com/Asaki14/dotfiles)。这套 dotfiles，也就是保存各工具偏好的配置文件，按工具分目录，包含桌面、终端工具、音乐和新闻阅读配置。
 
 
-不带参数运行 `./install.sh`，会进入交互选择。也可以只选需要的模块，或用 `--all` 安装全部模块。已有冲突文件会先移到 `~/.dotfiles-backup/` 下的对应备份目录，再建立链接，仓库目录需要保留。
+运行 `./install.sh` 安装全部；用 `--modules yazi,fish` 只装需要的部分，加 `--dry-run` 先预览。本机的耳机名、所在城市这类值由安装器自动检测，写进不提交的本地文件。已有冲突文件会先移到 `~/.dotfiles-backup/` 下的对应备份目录，再建立链接，仓库目录需要保留。
 
-安装前请读仓库的[安装前须知](https://github.com/Asaki14/dotfiles/blob/main/README.zh-CN.md#安装前须知)。omacosy 会修改系统设置、加载后台服务并设置壁纸，文件备份不能还原这些系统设置。Agent 配置包含权限绕过设置，需要按自己的审批要求修改，预览命令不会实际安装。
+安装前请读仓库的[安装前须知](https://github.com/Asaki14/dotfiles/blob/main/README.zh-CN.md#安装前须知)。omacosy 会修改系统设置、加载后台服务并设置壁纸，文件备份不能还原这些系统设置，预览命令不会实际安装。
 
 不过我建议让你的 Agent 读仓库再帮你安装会比较好，毕竟它活在你的电脑上，最了解你的电脑情况。况且，这种事情上 AI 一般不会犯错误，人会，别问我怎么知道的。
 

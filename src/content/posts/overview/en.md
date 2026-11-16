@@ -69,12 +69,12 @@ omacosy made theme changes work across tools: the status bar, wallpaper, Ghostty
 
 ## The configuration is open source, and you can install just part of it
 
-The repository is [Asaki14/dotfiles](https://github.com/Asaki14/dotfiles). These dotfiles, configuration files that store each tool's preferences, are organized into modules by tool. They include desktop themes, terminal tools, and agent-related configuration.
+The repository is [Asaki14/dotfiles](https://github.com/Asaki14/dotfiles). These dotfiles, configuration files that store each tool's preferences, are organized into directories by tool. They include the desktop, terminal tools, music, and news reading.
 
 
-Run `./install.sh` without arguments for interactive selection. You can pick only the modules you need or use `--all` to install everything. Conflicting files are first moved into a corresponding backup directory under `~/.dotfiles-backup/`, then links are created. You need to keep the repository directory around.
+Run `./install.sh` to install everything, or `--modules yazi,fish` to install only what you need; add `--dry-run` to preview first. Machine-specific values such as your headphones and city are detected by the installer and written to local files that are never committed. Conflicting files are first moved into a corresponding backup directory under `~/.dotfiles-backup/`, then links are created. You need to keep the repository directory around.
 
-Before installing, read the repository's [installation notes](https://github.com/Asaki14/dotfiles/blob/main/README.md#before-installing). omacosy changes system settings, loads background services, and sets your wallpaper. File backups cannot restore those system settings. The agent configuration includes permission-bypass settings, which you need to change to match your own approval requirements. Preview commands don't actually install anything.
+Before installing, read the repository's [installation notes](https://github.com/Asaki14/dotfiles/blob/main/README.md#before-installing). omacosy changes system settings, loads background services, and sets your wallpaper. File backups cannot restore those system settings. Preview commands don't actually install anything.
 
 Still, I'd suggest asking your agent to read the repository and help you install it. It lives on your computer, after all, so it knows your machine best. Besides, AI generally doesn't make mistakes with this sort of thing. Humans do. Don't ask me how I know.
 

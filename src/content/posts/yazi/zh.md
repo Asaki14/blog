@@ -34,7 +34,7 @@ Yazi 用的是 Vim 键位，也就是沿用 Vim 文本编辑器的一套键盘�
 
 我用 `y` 命令启动 Yazi。它是我在 fish 里配置的函数。这个函数会读取 Yazi 退出时所在的目录，再让 Shell 切过去。
 
-所以，退出后切换目录需要这层 Shell 配置，不是直接运行 `yazi` 就自动有。对应函数在 [fish 配置](https://github.com/Asaki14/dotfiles/blob/main/modules/fish/home/.config/fish/config.fish)里，单独安装 Yazi 的话，也需要补上适合自己 Shell 的配置。
+所以，退出后切换目录需要这层 Shell 配置，不是直接运行 `yazi` 就自动有。对应函数在 [fish 配置](https://github.com/Asaki14/dotfiles/blob/main/fish/config.fish)里，单独安装 Yazi 的话，也需要补上适合自己 Shell 的配置。
 
 ![按 q 退出 Yazi 后，终端已切到 dotfiles/modules/yazi 目录](/media/yazi/yazi-cwd.png)
 
@@ -61,7 +61,7 @@ Neovim 是终端里的文本编辑器，启动命令是 `nvim`。在 Yazi 里找
 
 ## 配置可以单独取用
 
-配置放在 [Asaki14/dotfiles 的 Yazi 模块](https://github.com/Asaki14/dotfiles/tree/main/modules/yazi)。这套配置用于 macOS，安装器通过 Homebrew 装依赖，需要先装好 Homebrew。先克隆仓库并进入目录：
+配置放在 [Asaki14/dotfiles 的 Yazi 目录](https://github.com/Asaki14/dotfiles/tree/main/yazi)。这套配置用于 macOS，安装器通过 Homebrew 装依赖，需要先装好 Homebrew。先克隆仓库并进入目录：
 
 ```sh
 git clone https://github.com/Asaki14/dotfiles.git
@@ -80,7 +80,7 @@ cd dotfiles
 ./install.sh --modules yazi
 ```
 
-安装器会安装 Yazi 及预览、搜索用到的工具，并添加 smart-enter 与 compress 插件。已有冲突文件会移到备份目录，之后逐个建立软链，仓库目录需要保留。
+安装器会安装 Yazi 及预览、搜索用到的工具，smart-enter 与 compress 插件随配置一起提供。已有的 `~/.config/yazi` 会移到备份目录，再建立软链，仓库目录需要保留。
 
 这份配置的文本编辑依赖 Neovim，配色引用 omacosy 生成的主题，omacosy 是同一仓库里的主题模块。如果只想取用 Yazi，可以改掉对应的打开方式，并在 `theme.toml` 里换成其他配色，不必为了文件管理照搬整套桌面。
 
