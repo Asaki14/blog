@@ -12,7 +12,7 @@ series: Dotfiles
 
 现在把它们整理成了 [Asaki14/dotfiles](https://github.com/Asaki14/dotfiles)。如果你也想把 Mac 打磨得更顺手，可以看看我的配置是否能给你一些灵感，我希望我也能成为你的Xrce（开源精神？bushi）。这篇先讲全景和迭代，具体工具留到后续单篇。
 
-![把 Mac 打磨顺手：203 秒故事，真实工具操作与中文字幕](/media/overview/story-zh-16x9.mp4)
+![我的 dotfiles 实录：5 套主题、5 种状态栏、4 种窗格布局与终端工具，中英字幕](/media/overview/showcase.mp4)
 
 ## 修到能用，再改成自己的
 

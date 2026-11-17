@@ -12,7 +12,7 @@ Of course, at first a few things just looked slightly off. I only wanted to twea
 
 I've now collected it all in [Asaki14/dotfiles](https://github.com/Asaki14/dotfiles). If you'd also like your Mac to feel more natural to use, maybe my setup can give you a few ideas. I'd love to be your Xrce (the spirit of open source? Okay, maybe I'm getting carried away). This post covers the whole picture and how it evolved. Individual tools can wait for their own posts.
 
-![Making my Mac feel right: a 193-second story with real tool demonstrations and English captions](/media/overview/story-en-16x9.mp4)
+![My dotfiles, recorded live: 5 themes, 5 bar layouts, 4 pane layouts and the terminal tools, with bilingual captions](/media/overview/showcase.mp4)
 
 ## Get it working, then make it mine
 
