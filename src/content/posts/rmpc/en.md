@@ -1,5 +1,5 @@
 ---
-title: "rmpc: A Gorgeous Terminal Music Player"
+title: "rmpc: No Ads, No Subscriptions, Unlimited Music in the Terminal"
 date: 2026-11-21
 description: "Fed up with ads and stacked subscription tiers in music apps, I moved my listening into the terminal: rmpc's interface, how I use it, and my configuration."
 tags:
